@@ -24,6 +24,7 @@ jobs:
 
 before_install:
   - chmod +x ./mvnw
+  - chmod +x ./scripts/docker_ci.sh
 
 # keep the maven local repository between different runs
 cache:
