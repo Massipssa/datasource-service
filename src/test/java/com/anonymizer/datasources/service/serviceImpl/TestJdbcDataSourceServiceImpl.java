@@ -1,4 +1,4 @@
 package com.anonymizer.datasources.service.serviceImpl;
 
-public class JdbcDataSourceServiceImplTest {
+public class TestJdbcDataSourceServiceImpl {
 }

@@ -10,17 +10,25 @@ services:
 # stages names from jobs
 stages:
   - clean
+  - test
   - package
 
 jobs:
   include:
-    - name: "Clean & package"
+    - name: "Clean"
       stage: clean
       install: true
-      script: ./mvnw clean package
+      script: ./mvnw clean
+    - name: "Test"
+        stage: test
+        install: true
+        script: ./mvnw test
+    - name: "Package"
+        stage: package
+        install: true
+        script: ./mvnw package
     - name: "Docker build & push"
       script: bash ./scripts/docker_ci.sh
-
 
 before_install:
   - chmod +x ./mvnw

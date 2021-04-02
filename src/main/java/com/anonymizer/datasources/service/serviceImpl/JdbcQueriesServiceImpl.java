@@ -1,4 +1,4 @@
-package com.anonymizer.datasources.service.ServiceImpl;
+package com.anonymizer.datasources.service.serviceImpl;
 
 import com.anonymizer.datasources.model.JdbcDataSource;
 import com.anonymizer.datasources.model.TableInfo;
