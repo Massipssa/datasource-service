@@ -19,7 +19,7 @@ jobs:
       install: true
       script: ./mvnw clean package
     - name: "Docker build & push"
-      script: bash scripts/docker_ci.sh
+      script: bash ./scripts/docker_ci.sh
 
 
 before_install:
