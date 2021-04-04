@@ -7,10 +7,6 @@ jdk: openjdk11
 services:
   - docker
 
-branches:
-  only:
-    - master
-
 jobs:
   include:
     - name: "Clean"
