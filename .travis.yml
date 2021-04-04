@@ -14,7 +14,7 @@ branches:
 jobs:
   include:
     - name: "Clean"
-      script: ./mvnw clean
+      script: ./mvnw clean compile
     - name: "Test"
         script: ./mvnw test
     - name: "Package"
