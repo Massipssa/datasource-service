@@ -7,20 +7,23 @@ jdk: openjdk11
 services:
   - docker
 
+# stages names from jobs
+stages:
+  - clean
+  - package
+
 jobs:
   include:
-    - name: "Clean"
-      script: ./mvnw clean compile
-    - name: "Test"
-        script: ./mvnw test
-    - name: "Package"
-        script: ./mvnw package
+    - name: "Clean & package"
+      stage: clean
+      install: true
+      script: ./mvnw clean package
     - name: "Docker build & push"
-      script: bash ./scripts/docker_ci.sh
+      script: bash scripts/docker_ci.sh
+
 
 before_install:
   - chmod +x ./mvnw
-  - chmod +x ./scripts/docker_ci.sh
 
 # keep the maven local repository between different runs
 cache:
