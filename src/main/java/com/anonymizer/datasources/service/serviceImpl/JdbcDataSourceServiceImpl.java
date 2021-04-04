@@ -1,9 +1,11 @@
 package com.anonymizer.datasources.service.serviceImpl;
 
+import com.anonymizer.datasources.exception.DataSourceExistsException;
 import com.anonymizer.datasources.model.JdbcDataSource;
 import com.anonymizer.datasources.repository.JdbcDataSourceRepository;
-import com.anonymizer.datasources.service.JdbcDataSourceService;
+import com.anonymizer.datasources.service.DataSourceService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -12,22 +14,29 @@ import java.util.Optional;
 
 /**
  * TODO:
-    * Don't save connection with same name
     * Encrypt connection pwd
  */
 
 @Service
-public class JdbcDataSourceServiceImpl implements JdbcDataSourceService {
-
+public class JdbcDataSourceServiceImpl implements DataSourceService {
 
     @Autowired
     JdbcDataSourceRepository jdbcDataSourceRepository;
 
+    @Autowired
+    PasswordEncoder passwordEncoder;
+
     @Override
-    public JdbcDataSource createDataSource(JdbcDataSource jdbcDataSource) {
-        jdbcDataSource.setCreationTime(LocalDateTime.now());
-        jdbcDataSource.setUpdateTime(LocalDateTime.now());
-        return jdbcDataSourceRepository.save(jdbcDataSource);
+    public JdbcDataSource createDataSource(JdbcDataSource jdbcDataSource) throws DataSourceExistsException {
+        if(!(jdbcDataSourceRepository.findByName(jdbcDataSource.getName()).isPresent()))
+        {
+            String pwd = jdbcDataSource.getPassword();
+            jdbcDataSource.setPassword(passwordEncoder.encode(pwd));
+            jdbcDataSource.setCreationTime(LocalDateTime.now());
+            jdbcDataSource.setUpdateTime(LocalDateTime.now());
+            return jdbcDataSourceRepository.save(jdbcDataSource);
+        }
+        throw new DataSourceExistsException(jdbcDataSource);
     }
 
     @Override
@@ -42,6 +51,7 @@ public class JdbcDataSourceServiceImpl implements JdbcDataSourceService {
 
     @Override
     public JdbcDataSource updateDataSource(JdbcDataSource jdbcDataSource, int id) {
+
         return jdbcDataSourceRepository.findById(id)
                 .map(u -> {
                     u.setPassword(jdbcDataSource.getPassword());
@@ -53,17 +63,12 @@ public class JdbcDataSourceServiceImpl implements JdbcDataSourceService {
     }
 
     @Override
-    public void deleteDataSource(String name) {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
     public void deleteDataSourceById(int id) {
         jdbcDataSourceRepository.deleteById(id);
     }
 
     @Override
     public void deleteDataSources(Collection<JdbcDataSource> jdbcDataSources) {
-        throw new UnsupportedOperationException();
+        jdbcDataSourceRepository.deleteAll(jdbcDataSources);
     }
 }

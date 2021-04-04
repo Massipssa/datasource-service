@@ -1,5 +1,6 @@
 package com.anonymizer.datasources.service.serviceImpl;
 
+import com.anonymizer.datasources.model.GenericDataSource;
 import com.anonymizer.datasources.model.JdbcDataSource;
 import com.anonymizer.datasources.model.TableInfo;
 import com.anonymizer.datasources.repository.JdbcDataSourceRepository;

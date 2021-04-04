@@ -1,4 +1,13 @@
 package com.anonymizer.datasources.model;
 
-public class HadoopDataSource {
+import lombok.Data;
+
+import javax.persistence.Entity;
+
+@Entity(name = "hadoop_sources")
+@Data
+public class HadoopDataSource extends GenericDataSource {
+    private String owner;
+    private String databaseName;
+    private String path;
 }

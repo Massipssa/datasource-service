@@ -1,10 +1,10 @@
 package com.anonymizer.datasources.controller;
 
 import com.anonymizer.datasources.model.JdbcDataSource;
-import com.anonymizer.datasources.service.JdbcDataSourceService;
-import org.junit.BeforeClass;
+import com.anonymizer.datasources.service.DataSourceService;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.Before;
 import org.junit.Test;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,60 +31,58 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+
+/**
+ * TODO: add tests
+ *      - return 404 when datasource not exists
+ */
+
 @RunWith(SpringRunner.class)
 @WebMvcTest(JdbcDataSourceController.class)
-public class TestJdbcDataSourceController {
+public class JdbcDataSourceControllerTest {
 
-    private static Logger logger = LoggerFactory.getLogger(TestJdbcDataSourceController.class);
+    private static Logger logger = LoggerFactory.getLogger(JdbcDataSourceControllerTest.class);
+    private static final ObjectMapper om = new ObjectMapper();
 
-    //private static JdbcDataSource testJdbcDataSource;
+    private JdbcDataSource testJdbcDataSource;
 
     @Autowired
     private MockMvc mockMvc;
 
     @MockBean
-    private JdbcDataSourceService mockJdbcDataSourceService;
+    private DataSourceService mockJdbcDataSourceService;
 
-  /*  @BeforeAll
-    public static void setUp() {
+    @Before
+    public void setUp() {
         testJdbcDataSource = new JdbcDataSource();
         testJdbcDataSource.setId(1);
-        testJdbcDataSource.setUsername("test-username");
-    }*/
+        testJdbcDataSource.setUsername("test-datasource");
+    }
 
     @Test
     public void should_CreateDatasource_When_RequestIsValid() throws Exception {
-
-        JdbcDataSource testJdbcDataSource = new JdbcDataSource();
-        testJdbcDataSource.setId(1);
-        testJdbcDataSource.setUsername("test-username");
 
         when(mockJdbcDataSourceService.createDataSource(any(JdbcDataSource.class))).thenReturn(testJdbcDataSource);
 
         String content = "{\"id\": \"" + testJdbcDataSource.getId() + "\",\"username\": \"" + testJdbcDataSource.getUsername() + "\"}";
         logger.debug(content);
 
-        mockMvc.perform(post("/api/v1/datasource/datasource")
+        mockMvc.perform(post("/api/v1/datasource/jdbc/datasource")
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .content(content)
                 .accept(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value("1"))
-                .andExpect(jsonPath("$.username").value("test-username"));
+                .andExpect(jsonPath("$.username").value("test-datasource"));
     }
 
     @Test
     public void should_ListDataSources_When_RequestIsValid() throws Exception {
 
-        JdbcDataSource testJdbcDataSource = new JdbcDataSource();
-        testJdbcDataSource.setId(1);
-        testJdbcDataSource.setUsername("test-username");
-
         List<JdbcDataSource> allJdbcDataSources = Arrays.asList(testJdbcDataSource);
-
         given(mockJdbcDataSourceService.getAllDataSources()).willReturn(allJdbcDataSources);
 
-        mockMvc.perform(get("/api/v1/datasource/datasources")
+        mockMvc.perform(get("/api/v1/datasource/jdbc/datasources")
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(1)))
@@ -94,11 +92,6 @@ public class TestJdbcDataSourceController {
     @Test
     public void should_GetDatasource_WhenRequestIsValid() throws Exception {
 
-        JdbcDataSource testJdbcDataSource = new JdbcDataSource();
-        testJdbcDataSource.setId(1);
-        testJdbcDataSource.setUsername("test-username");
-
-
         String content = "{\"id\": \"" + testJdbcDataSource.getId() + "\",\"username\": \""
                 + testJdbcDataSource.getUsername() + "\"}";
 
@@ -107,7 +100,7 @@ public class TestJdbcDataSourceController {
         when(mockJdbcDataSourceService.getDataSourceByName(testJdbcDataSource.getUsername()))
                 .thenReturn(Optional.of(testJdbcDataSource));
 
-        mockMvc.perform(get("/api/v1/datasource/{name}", "test-username")
+        mockMvc.perform(get("/api/v1/datasource/jdbc/{name}", "test-datasource")
                 .content(content)
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
@@ -115,28 +108,41 @@ public class TestJdbcDataSourceController {
 
     @Test
     public void whenDelete_theDatasourceShouldBeDeleted() throws Exception {
-        JdbcDataSource testJdbcDataSource = new JdbcDataSource();
-        testJdbcDataSource.setId(1);
-        testJdbcDataSource.setUsername("test-username");
 
         when(mockJdbcDataSourceService.getDataSourceByName(testJdbcDataSource.getName()))
                 .thenReturn(Optional.of(testJdbcDataSource));
         mockJdbcDataSourceService.deleteDataSourceById(testJdbcDataSource.getId());
         // called only one time
-        verify(mockJdbcDataSourceService, times(1)).deleteDataSourceById(testJdbcDataSource.getId());
+        verify(mockJdbcDataSourceService, times(1))
+                .deleteDataSourceById(testJdbcDataSource.getId());
 
-        mockMvc.perform(delete("/api/v1/datasource/{id}", "1")
+        mockMvc.perform(delete("/api/v1/datasource/jdbc/{id}", "1")
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
     }
 
     @Test
-    public void should_UpdateDatasource_When_IsValid() throws Exception {
+    public void whenDelete_theDataSourcesShouldBeDeleted() throws Exception {
 
-        JdbcDataSource testJdbcDataSource = new JdbcDataSource();
-        testJdbcDataSource.setId(1);
-        testJdbcDataSource.setUsername("test-username");
+        List<JdbcDataSource> jdbcDataSourcesToDelete = Arrays.asList(testJdbcDataSource);
+        String content = om.writeValueAsString(jdbcDataSourcesToDelete);
+        logger.debug(content);
+
+        mockJdbcDataSourceService.deleteDataSources(jdbcDataSourcesToDelete);
+        verify(mockJdbcDataSourceService, times(1))
+                .deleteDataSources(jdbcDataSourcesToDelete);
+
+        mockMvc.perform(delete("/api/v1/datasource/jdbc/datasources")
+                .content(content)
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+    }
+
+
+    @Test
+    public void should_UpdateDatasource_When_IsValid() throws Exception {
 
         String content = "{\"id\": \"" + testJdbcDataSource.getId() + "\",\"username\": \""
                 + testJdbcDataSource.getUsername() + "\"}";
@@ -144,14 +150,14 @@ public class TestJdbcDataSourceController {
         when(mockJdbcDataSourceService.updateDataSource(testJdbcDataSource, 1))
                 .thenReturn(testJdbcDataSource);
 
-        mockMvc.perform(put("/api/v1/datasource/{id}", "1")
+        mockMvc.perform(put("/api/v1/datasource/jdbc/{id}", "1")
                 .content(content)
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andDo(print())
                 .andExpect(jsonPath("$.id").value("1"))
-                .andExpect(jsonPath("$.username").value("test-username"))
+                .andExpect(jsonPath("$.username").value("test-datasource"))
                 .andReturn()
                 .getResponse()
                 .getContentAsString();

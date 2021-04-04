@@ -9,21 +9,18 @@ import java.sql.SQLException;
 import java.util.Collection;
 
 @RestController
-@RequestMapping("/api/v1/datasource")
+@RequestMapping("/api/v1/datasource/jdbc")
 @CrossOrigin(origins = "http://localhost:4200")
 public class JdbcQueriesController {
-
 
     @Autowired
     JdbcQueriesService jdbcQueriesService;
 
     @GetMapping(path = "/status/{name}")
-    public @ResponseBody
-    boolean getConnexionStatus(@PathVariable("name") String dataSourceName) throws SQLException {
+    public @ResponseBody boolean getConnexionStatus(@PathVariable("name") String dataSourceName) throws SQLException {
         return  jdbcQueriesService.getConnexionStatus(dataSourceName);
     }
 
-    // TODO: change return type
     @GetMapping(path = "/tables/{name}")
     public @ResponseBody Collection<TableInfo> getTablesInfo(@PathVariable("name") String dataSourceName) {
         return jdbcQueriesService.getTables(dataSourceName);
