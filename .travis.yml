@@ -7,6 +7,10 @@ jdk: openjdk11
 services:
   - docker
 
+branches:
+  only:
+    - master
+
 # stages names from jobs
 stages:
   - clean

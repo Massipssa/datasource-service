@@ -4,7 +4,7 @@ import lombok.Data;
 
 import javax.persistence.Entity;
 
-@Entity(name = "jdbc_sources")
+@Entity(name =  "jdbc_sources")
 @Data
 public class JdbcDataSource extends GenericDataSource {
 

@@ -50,7 +50,7 @@ public class JdbcDataSourceControllerTest {
     private MockMvc mockMvc;
 
     @MockBean
-    private DataSourceService mockJdbcDataSourceService;
+    private DataSourceService mockDataSourceService;
 
     @Before
     public void setUp() {
@@ -62,7 +62,7 @@ public class JdbcDataSourceControllerTest {
     @Test
     public void should_CreateDatasource_When_RequestIsValid() throws Exception {
 
-        when(mockJdbcDataSourceService.createDataSource(any(JdbcDataSource.class))).thenReturn(testJdbcDataSource);
+        when(mockDataSourceService.createDataSource(any(JdbcDataSource.class))).thenReturn(testJdbcDataSource);
 
         String content = "{\"id\": \"" + testJdbcDataSource.getId() + "\",\"username\": \"" + testJdbcDataSource.getUsername() + "\"}";
         logger.debug(content);
@@ -80,7 +80,7 @@ public class JdbcDataSourceControllerTest {
     public void should_ListDataSources_When_RequestIsValid() throws Exception {
 
         List<JdbcDataSource> allJdbcDataSources = Arrays.asList(testJdbcDataSource);
-        given(mockJdbcDataSourceService.getAllDataSources()).willReturn(allJdbcDataSources);
+        given(mockDataSourceService.getAllDataSources()).willReturn(allJdbcDataSources);
 
         mockMvc.perform(get("/api/v1/datasource/jdbc/datasources")
                 .contentType(MediaType.APPLICATION_JSON))
@@ -97,7 +97,7 @@ public class JdbcDataSourceControllerTest {
 
         logger.debug(content);
 
-        when(mockJdbcDataSourceService.getDataSourceByName(testJdbcDataSource.getUsername()))
+        when(mockDataSourceService.getDataSourceByName(testJdbcDataSource.getUsername()))
                 .thenReturn(Optional.of(testJdbcDataSource));
 
         mockMvc.perform(get("/api/v1/datasource/jdbc/{name}", "test-datasource")
@@ -109,11 +109,11 @@ public class JdbcDataSourceControllerTest {
     @Test
     public void whenDelete_theDatasourceShouldBeDeleted() throws Exception {
 
-        when(mockJdbcDataSourceService.getDataSourceByName(testJdbcDataSource.getName()))
+        when(mockDataSourceService.getDataSourceByName(testJdbcDataSource.getName()))
                 .thenReturn(Optional.of(testJdbcDataSource));
-        mockJdbcDataSourceService.deleteDataSourceById(testJdbcDataSource.getId());
+        mockDataSourceService.deleteDataSourceById(testJdbcDataSource.getId());
         // called only one time
-        verify(mockJdbcDataSourceService, times(1))
+        verify(mockDataSourceService, times(1))
                 .deleteDataSourceById(testJdbcDataSource.getId());
 
         mockMvc.perform(delete("/api/v1/datasource/jdbc/{id}", "1")
@@ -129,8 +129,8 @@ public class JdbcDataSourceControllerTest {
         String content = om.writeValueAsString(jdbcDataSourcesToDelete);
         logger.debug(content);
 
-        mockJdbcDataSourceService.deleteDataSources(jdbcDataSourcesToDelete);
-        verify(mockJdbcDataSourceService, times(1))
+        mockDataSourceService.deleteDataSources(jdbcDataSourcesToDelete);
+        verify(mockDataSourceService, times(1))
                 .deleteDataSources(jdbcDataSourcesToDelete);
 
         mockMvc.perform(delete("/api/v1/datasource/jdbc/datasources")
@@ -147,7 +147,8 @@ public class JdbcDataSourceControllerTest {
         String content = "{\"id\": \"" + testJdbcDataSource.getId() + "\",\"username\": \""
                 + testJdbcDataSource.getUsername() + "\"}";
 
-        when(mockJdbcDataSourceService.updateDataSource(testJdbcDataSource, 1))
+        when(mockDataSourceService
+                .updateDataSource(testJdbcDataSource, 1))
                 .thenReturn(testJdbcDataSource);
 
         mockMvc.perform(put("/api/v1/datasource/jdbc/{id}", "1")

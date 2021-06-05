@@ -1,6 +1,5 @@
 package com.anonymizer.datasources.service.serviceImpl;
 
-import com.anonymizer.datasources.model.GenericDataSource;
 import com.anonymizer.datasources.model.JdbcDataSource;
 import com.anonymizer.datasources.model.TableInfo;
 import com.anonymizer.datasources.repository.JdbcDataSourceRepository;
@@ -10,6 +9,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.sql.Connection;
@@ -38,6 +38,9 @@ public class JdbcQueriesServiceImpl implements JdbcQueriesService {
 
     @Autowired
     JdbcDataSourceRepository jdbcDataSourceRepository;
+
+    @Autowired
+    PasswordEncoder passwordEncoder;
 
     DataSource dataSource(JdbcDataSource jdbcDataSource) {
         DriverManagerDataSource driverManagerDataSource = new DriverManagerDataSource();

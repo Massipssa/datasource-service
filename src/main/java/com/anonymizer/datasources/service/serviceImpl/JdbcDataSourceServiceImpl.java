@@ -18,7 +18,7 @@ import java.util.Optional;
  */
 
 @Service
-public class JdbcDataSourceServiceImpl implements DataSourceService {
+public class JdbcDataSourceServiceImpl implements DataSourceService<JdbcDataSource> {
 
     @Autowired
     JdbcDataSourceRepository jdbcDataSourceRepository;
@@ -31,7 +31,7 @@ public class JdbcDataSourceServiceImpl implements DataSourceService {
         if(!(jdbcDataSourceRepository.findByName(jdbcDataSource.getName()).isPresent()))
         {
             String pwd = jdbcDataSource.getPassword();
-            jdbcDataSource.setPassword(passwordEncoder.encode(pwd));
+            //jdbcDataSource.setPassword(passwordEncoder.encode(pwd));
             jdbcDataSource.setCreationTime(LocalDateTime.now());
             jdbcDataSource.setUpdateTime(LocalDateTime.now());
             return jdbcDataSourceRepository.save(jdbcDataSource);

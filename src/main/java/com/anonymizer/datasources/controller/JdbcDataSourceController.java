@@ -21,9 +21,9 @@ public class JdbcDataSourceController {
     private static final Logger logger = LoggerFactory.getLogger(JdbcDataSourceController.class);
 
     @Autowired
-    DataSourceService dataSourceService;
+    DataSourceService<JdbcDataSource> dataSourceService;
 
-    @PostMapping(path = "/datasource")
+    @PostMapping
     public JdbcDataSource addDataSource(@Valid @NotNull @RequestBody JdbcDataSource dataSource)
             throws DataSourceExistsException {
         logger.info(String.format("Data source name: {}", dataSource.getName()));

@@ -21,6 +21,18 @@
 		<postgres.version>42.2.19</postgres.version>
 	</properties>
 
+	<scm>
+		<connection>scm:git:git@github.com:.git</connection>
+		<developerConnection>scm:git:git@github.com:.git</developerConnection>
+		<url>.git</url>
+		<tag>HEAD</tag>
+	</scm>
+
+	<issueManagement>
+		<system>JIRA</system>
+		<url></url>
+	</issueManagement>
+
 	<dependencies>
 
 		<!-- Spring -->
