@@ -5,7 +5,8 @@ pipeline {
         jdk 'jdk8' 
     }
     stages {
-      
+        
+        /*
         stage('Clone sources') {
             steps {
                 git branch: 'master',
@@ -13,7 +14,7 @@ pipeline {
                     url: 'https://github.com/Massipssa/datasource-service.git'
             }
         }
-        
+        */
         stage ('Build') {
             steps {
                 sh 'mvn -Dmaven.test.failure.ignore=true install'
