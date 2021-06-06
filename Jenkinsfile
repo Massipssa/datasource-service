@@ -5,15 +5,15 @@ pipeline {
         jdk 'jdk8' 
     }
     stages {
-        stage ('Initialize') {
+      
+        stage('Clone sources') {
             steps {
-                sh '''
-                    echo "PATH = ${PATH}"
-                    echo "M2_HOME = ${M2_HOME}"
-                ''' 
+                git branch: 'master',
+                    credentialsId: '$GITHUB-CRED' 
+                    url: 'https://github.com/Massipssa/datasource-service.git'
             }
         }
-
+        
         stage ('Build') {
             steps {
                 sh 'mvn -Dmaven.test.failure.ignore=true install'
