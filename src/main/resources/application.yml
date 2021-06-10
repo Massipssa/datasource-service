@@ -26,3 +26,16 @@ server:
 logging:
   level:
     root: DEBUG
+
+
+management:
+  endpoints:
+    # expose Actuator endpoints via http
+    web:
+      exposure:
+        include: "*"
+
+  endpoint:
+    # show health details
+    health:
+      show-details: always

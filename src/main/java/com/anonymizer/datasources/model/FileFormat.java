@@ -9,7 +9,7 @@ public enum FileFormat {
 
     private final String extension;
 
-    FileFormat(String extension) {this.extension = extension;}
+    FileFormat(String extension) {  this.extension = extension;}
 
     public String getFileExtension () {
         return extension;

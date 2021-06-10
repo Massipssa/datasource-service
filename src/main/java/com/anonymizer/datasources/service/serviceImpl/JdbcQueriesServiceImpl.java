@@ -28,12 +28,12 @@ import javax.sql.DataSource;
 @Service
 public class JdbcQueriesServiceImpl implements JdbcQueriesService {
 
-    private static Logger logger = LoggerFactory.getLogger(JdbcQueriesServiceImpl.class);
+    private static final Logger LOG = LoggerFactory.getLogger(JdbcQueriesServiceImpl.class);
 
-    private static String ORACLE_DRIVER = "oracle.jdbc.driver.OracleDriver";
-    private static String MYSQL_DRIVER = "com.mysql.jdbc.Driver";
-    private static String POSTGRES_DRIVER = "org.postgresql.Driver";
-    private static String SQL_SERVER_DRIVER = "com.microsoft.sqlserver.jdbc.SQLServerDrive";
+    private static final String ORACLE_DRIVER = "oracle.jdbc.driver.OracleDriver";
+    private static final String MYSQL_DRIVER = "com.mysql.jdbc.Driver";
+    private static final String POSTGRES_DRIVER = "org.postgresql.Driver";
+    private static final String SQL_SERVER_DRIVER = "com.microsoft.sqlserver.jdbc.SQLServerDrive";
 
 
     @Autowired
